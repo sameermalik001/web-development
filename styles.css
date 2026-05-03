@@ -1,0 +1,256 @@
+/* ===== RESET ===== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== BASE ===== */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f5f0ff;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px;
+  flex: 1;
+}
+
+/* ===== HEADER ===== */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.header__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #5b4a9e;
+}
+
+.header__subtitle {
+  font-size: 0.95rem;
+  color: #888;
+  margin-top: 6px;
+}
+
+/* ===== ADD NOTE FORM ===== */
+.add-note {
+  background: #ffffff;
+  border: 1px solid #e0d9f5;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 10px rgba(91, 74, 158, 0.06);
+}
+
+.add-note__title {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  padding: 12px 16px;
+  border: 1px solid #ddd6f5;
+  border-radius: 8px;
+  outline: none;
+  background: #faf8ff;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+.add-note__title:focus {
+  border-color: #a78bfa;
+}
+
+.add-note__title::placeholder {
+  color: #b0a4d4;
+}
+
+.add-note__content {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  padding: 12px 16px;
+  border: 1px solid #ddd6f5;
+  border-radius: 8px;
+  outline: none;
+  background: #faf8ff;
+  color: #333;
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
+  transition: border-color 0.2s;
+}
+
+.add-note__content:focus {
+  border-color: #a78bfa;
+}
+
+.add-note__content::placeholder {
+  color: #b0a4d4;
+}
+
+.add-note__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.add-note__btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 12px 28px;
+  background-color: #7c5ecf;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s;
+}
+
+.add-note__btn:hover {
+  background-color: #6a4ebd;
+  transform: translateY(-1px);
+}
+
+.add-note__btn:active {
+  transform: translateY(0);
+}
+
+.add-note__btn--save {
+  background-color: #3a9e6e;
+}
+
+.add-note__btn--save:hover {
+  background-color: #2e8a5c;
+}
+
+/* ===== NOTES SECTION ===== */
+.notes__heading {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #5b4a9e;
+  margin-bottom: 20px;
+}
+
+/* ===== NOTES GRID (Flexbox) ===== */
+.notes__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* ===== NOTE CARD ===== */
+.card {
+  flex: 1 1 260px;
+  max-width: 100%;
+  background: #ffffff;
+  border: 1px solid #e8e2f4;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(91, 74, 158, 0.1);
+}
+
+.card__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #3d3260;
+}
+
+.card__text {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.card__date {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+/* ===== PASTEL CARD COLORS ===== */
+.card--lavender {
+  background: #f3eeff;
+  border-color: #ddd1fc;
+}
+
+.card--mint {
+  background: #eafaf4;
+  border-color: #c8f0de;
+}
+
+.card--peach {
+  background: #fff3ec;
+  border-color: #fdddc7;
+}
+
+.card--sky {
+  background: #ebf5ff;
+  border-color: #c7e2ff;
+}
+
+.card--lemon {
+  background: #fffce8;
+  border-color: #f5edab;
+}
+
+.card--rose {
+  background: #fff0f3;
+  border-color: #fcd1da;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center;
+  padding: 20px;
+  background: #ebe4fa;
+  border-top: 1px solid #ddd6f5;
+}
+
+.footer__text {
+  font-size: 0.85rem;
+  color: #7a6cb0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .container {
+    padding: 24px 14px;
+  }
+
+  .header__title {
+    font-size: 1.5rem;
+  }
+
+  .notes__grid {
+    flex-direction: column;
+  }
+
+  .card {
+    flex: 1 1 100%;
+  }
+
+  .add-note__btn {
+    width: 100%;
+    text-align: center;
+  }
+}
