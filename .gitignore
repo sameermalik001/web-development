@@ -1,0 +1,5 @@
+.venv/
+expense_tracker/.env
+expenses.db
+.DS_Store
+__pycache__/
