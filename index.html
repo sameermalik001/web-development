@@ -32,9 +32,6 @@
                 <button class="add-note__btn" type="button" id="addNoteBtn">
                     + Add Note
                 </button>
-                <button class="add-note__btn add-note__btn--save" type="button" id="saveBtn">
-                    💾 Save Notes
-                </button>
             </div>
         </section>
 
@@ -44,47 +41,7 @@
 
             <div class="notes__grid">
 
-                <article class="card card--lavender">
-                    <h3 class="card__title">Welcome Note 👋</h3>
-                    <p class="card__text">This is your Notes App! Use the form above to add new notes. Each note appears
-                        here as a card.</p>
-                    <span class="card__date">May 3, 2026</span>
-                </article>
-
-                <article class="card card--mint">
-                    <h3 class="card__title">Grocery List 🛒</h3>
-                    <p class="card__text">Milk, Eggs, Bread, Butter, Fresh Vegetables, Rice, Pasta, Olive Oil, Cheese,
-                        Yogurt</p>
-                    <span class="card__date">May 2, 2026</span>
-                </article>
-
-                <article class="card card--peach">
-                    <h3 class="card__title">Meeting Agenda 📋</h3>
-                    <p class="card__text">Discuss Q3 goals, review sprint progress, assign new tasks to the team, and
-                        plan next week's standup schedule.</p>
-                    <span class="card__date">May 1, 2026</span>
-                </article>
-
-                <article class="card card--sky">
-                    <h3 class="card__title">Book Recommendations 📚</h3>
-                    <p class="card__text">Atomic Habits – James Clear, Deep Work – Cal Newport, The Pragmatic
-                        Programmer, Clean Code – Robert C. Martin</p>
-                    <span class="card__date">Apr 30, 2026</span>
-                </article>
-
-                <article class="card card--lemon">
-                    <h3 class="card__title">Workout Plan 💪</h3>
-                    <p class="card__text">Mon: Upper Body, Tue: Cardio, Wed: Legs, Thu: Core, Fri: Full Body, Sat: Yoga,
-                        Sun: Rest Day</p>
-                    <span class="card__date">Apr 29, 2026</span>
-                </article>
-
-                <article class="card card--rose">
-                    <h3 class="card__title">Project Ideas 💡</h3>
-                    <p class="card__text">Build a weather dashboard, create a portfolio site, make a recipe finder app,
-                        design a habit tracker.</p>
-                    <span class="card__date">Apr 28, 2026</span>
-                </article>
+                <!-- Notes are rendered dynamically by JavaScript -->
 
             </div>
         </section>
@@ -97,49 +54,123 @@
     </footer>
 
     <script>
+        const STORAGE_KEY = 'notes_app_data';
         const colors = ['lavender', 'mint', 'peach', 'sky', 'lemon', 'rose'];
         const grid = document.querySelector('.notes__grid');
+        const emptyState = document.createElement('p');
+        emptyState.className = 'notes__empty';
+        emptyState.textContent = 'No notes yet. Add your first note above!';
 
-        // Load saved notes from localStorage on page load
-        // If saved notes exist, replace the hardcoded cards entirely
-        const saved = JSON.parse(localStorage.getItem('notes_app_data') || '[]');
-        if (saved.length > 0) {
+        // Default starter notes (used only on very first visit)
+        const defaultNotes = [
+            { title: 'Welcome Note 👋', text: 'This is your Notes App! Use the form above to add new notes. Each note appears here as a card.', date: 'May 3, 2026', color: 'lavender' },
+            { title: 'Grocery List 🛒', text: 'Milk, Eggs, Bread, Butter, Fresh Vegetables, Rice, Pasta, Olive Oil, Cheese, Yogurt', date: 'May 2, 2026', color: 'mint' },
+            { title: 'Meeting Agenda 📋', text: 'Discuss Q3 goals, review sprint progress, assign new tasks to the team, and plan next week\'s standup schedule.', date: 'May 1, 2026', color: 'peach' },
+            { title: 'Book Recommendations 📚', text: 'Atomic Habits – James Clear, Deep Work – Cal Newport, The Pragmatic Programmer, Clean Code – Robert C. Martin', date: 'Apr 30, 2026', color: 'sky' },
+            { title: 'Workout Plan 💪', text: 'Mon: Upper Body, Tue: Cardio, Wed: Legs, Thu: Core, Fri: Full Body, Sat: Yoga, Sun: Rest Day', date: 'Apr 29, 2026', color: 'lemon' },
+            { title: 'Project Ideas 💡', text: 'Build a weather dashboard, create a portfolio site, make a recipe finder app, design a habit tracker.', date: 'Apr 28, 2026', color: 'rose' }
+        ];
+
+        // ---- Data helpers ----
+        function loadNotes() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw === null) {
+                // First visit — seed with defaults and persist
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultNotes));
+                return [...defaultNotes];
+            }
+            return JSON.parse(raw);
+        }
+
+        function saveNotes(notes) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+        }
+
+        // ---- Rendering ----
+        function renderNotes() {
+            const notes = loadNotes();
             grid.innerHTML = '';
-            saved.forEach(function(note) {
-                grid.insertAdjacentHTML('beforeend', createCardHTML(note.title, note.text, note.date, note.color));
+            if (notes.length === 0) {
+                grid.appendChild(emptyState);
+                return;
+            }
+            notes.forEach(function(note, index) {
+                grid.insertAdjacentHTML('beforeend', createCardHTML(note.title, note.text, note.date, note.color, index));
+            });
+
+            // Attach delete handlers
+            grid.querySelectorAll('.card__delete').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.dataset.index, 10);
+                    deleteNote(idx);
+                });
             });
         }
 
-        // Add Note — creates a new card at the top of the grid
-        document.getElementById('addNoteBtn').addEventListener('click', function() {
-            const title = document.getElementById('noteTitle').value.trim();
-            const content = document.getElementById('noteContent').value.trim();
-            if (!title) { alert('Please enter a note title.'); return; }
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            grid.insertAdjacentHTML('afterbegin', createCardHTML(title, content, date, color));
-            document.getElementById('noteTitle').value = '';
-            document.getElementById('noteContent').value = '';
-        });
-
-        // Save Notes — saves all current cards to localStorage, then refreshes
-        document.getElementById('saveBtn').addEventListener('click', function() {
-            var notes = [];
-            document.querySelectorAll('.card').forEach(function(card) {
-                notes.push({
-                    title: card.querySelector('.card__title').textContent,
-                    text: card.querySelector('.card__text').textContent,
-                    date: card.querySelector('.card__date').textContent,
-                    color: (card.className.match(/card--(\w+)/) || [])[1] || 'lavender'
-                });
+        // ---- Actions ----
+        function addNote(title, text) {
+            const notes = loadNotes();
+            notes.unshift({
+                title: title,
+                text: text,
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                color: colors[Math.floor(Math.random() * colors.length)]
             });
-            localStorage.setItem('notes_app_data', JSON.stringify(notes));
-            location.reload();
+            saveNotes(notes);
+            renderNotes();
+        }
+
+        function deleteNote(index) {
+            const notes = loadNotes();
+            if (index >= 0 && index < notes.length) {
+                const card = grid.querySelectorAll('.card')[index];
+                if (card) {
+                    card.classList.add('card--removing');
+                    card.addEventListener('animationend', function() {
+                        notes.splice(index, 1);
+                        saveNotes(notes);
+                        renderNotes();
+                    });
+                } else {
+                    notes.splice(index, 1);
+                    saveNotes(notes);
+                    renderNotes();
+                }
+            }
+        }
+
+        // ---- Event listeners ----
+        document.getElementById('addNoteBtn').addEventListener('click', function() {
+            const titleEl = document.getElementById('noteTitle');
+            const contentEl = document.getElementById('noteContent');
+            const title = titleEl.value.trim();
+            const content = contentEl.value.trim();
+            if (!title) {
+                titleEl.focus();
+                titleEl.classList.add('add-note__title--error');
+                setTimeout(function() { titleEl.classList.remove('add-note__title--error'); }, 800);
+                return;
+            }
+            addNote(title, content);
+            titleEl.value = '';
+            contentEl.value = '';
+            titleEl.focus();
         });
 
-        function createCardHTML(title, text, date, color) {
+        // Allow Ctrl+Enter / Cmd+Enter to add a note quickly
+        document.querySelector('.add-note').addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                document.getElementById('addNoteBtn').click();
+            }
+        });
+
+        // ---- Helpers ----
+        function createCardHTML(title, text, date, color, index) {
             return '<article class="card card--' + color + '">' +
-                '<h3 class="card__title">' + escapeHTML(title) + '</h3>' +
+                '<div class="card__header">' +
+                    '<h3 class="card__title">' + escapeHTML(title) + '</h3>' +
+                    '<button class="card__delete" data-index="' + index + '" title="Delete note" aria-label="Delete note">×</button>' +
+                '</div>' +
                 '<p class="card__text">' + escapeHTML(text) + '</p>' +
                 '<span class="card__date">' + escapeHTML(date) + '</span>' +
                 '</article>';
@@ -150,6 +181,9 @@
             div.textContent = str;
             return div.innerHTML;
         }
+
+        // ---- Init ----
+        renderNotes();
     </script>
 
 </body>

@@ -126,12 +126,17 @@ body {
   transform: translateY(0);
 }
 
-.add-note__btn--save {
-  background-color: #3a9e6e;
+/* ===== INPUT ERROR STATE ===== */
+.add-note__title--error {
+  border-color: #e74c3c !important;
+  animation: shake 0.4s ease-in-out;
 }
 
-.add-note__btn--save:hover {
-  background-color: #2e8a5c;
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-4px); }
 }
 
 /* ===== NOTES SECTION ===== */
@@ -185,6 +190,59 @@ body {
   font-size: 0.75rem;
   color: #aaa;
   margin-top: 4px;
+}
+
+/* ===== CARD HEADER (title + delete) ===== */
+.card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card__delete {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: transparent;
+  color: #c0b3db;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.card__delete:hover {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border-color: rgba(231, 76, 60, 0.25);
+}
+
+/* ===== CARD REMOVAL ANIMATION ===== */
+.card--removing {
+  animation: fadeSlideOut 0.35s ease forwards;
+}
+
+@keyframes fadeSlideOut {
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+}
+
+/* ===== EMPTY STATE ===== */
+.notes__empty {
+  text-align: center;
+  font-size: 1rem;
+  color: #b0a4d4;
+  padding: 48px 20px;
+  width: 100%;
 }
 
 /* ===== PASTEL CARD COLORS ===== */
